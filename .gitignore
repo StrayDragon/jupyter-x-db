@@ -1,3 +1,8 @@
+# User Custom
+notebooks/*
+!notebooks/.gitkeep
+!notebooks/example.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
