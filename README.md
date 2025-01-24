@@ -1,6 +1,6 @@
 # Jupyter x DB
 
-一个开箱即用的 JupyterLab Docker 镜像，集成了 JupySQL 内核，可访问多种数据库源, 可以在 Jupyter Notebook 中直接运行 SQL 查询。
+一个开箱即用的 JupyterLab Docker 镜像，集成了 [JupySQL](https://github.com/ploomber/jupysql) 内核，支持多种数据库源, 并直接在 Jupyter Notebook 中直接运行 SQL 查询。
 
 ## 特性
 
@@ -16,7 +16,7 @@
 ### 使用 Github Registry (ghcr)
 
 ```bash
-docker pull ghcr.io/straydragon/jupyter-x-db:main
+docker pull ghcr.io/straydragon/jupyter-x-db:latest
 cd <a directory which you like>
 mkdir -p notebooks
 docker run --host -v $(pwd)/notebooks:/opt/workspace/notebooks ghcr.io/straydragon/jupyter-x-db
