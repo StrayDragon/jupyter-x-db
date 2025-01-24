@@ -28,35 +28,37 @@ RUN if [ "$USE_CN_MIRRORS" = "true" ]; then \
     fi
 
 # 安装系统依赖并创建用户
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         python3-dev \
         default-libmysqlclient-dev \
         build-essential \
         pkg-config \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
+        curl \
     && groupadd -g ${GROUP_ID} ${USERNAME} \
     && useradd -u ${USER_ID} -g ${GROUP_ID} -m -s /bin/bash ${USERNAME} \
     && install -d -m 755 -o ${USERNAME} -g ${USERNAME} \
         ${JUPYTER_BASE_DIR} \
         ${JUPYTER_BASE_DIR}/.jupyter/{runtime,config,data} \
-        /home/${USERNAME}/.local
+        /home/${USERNAME}/.local \
+    && su -l ${USERNAME} -c "pip install --user --no-cache-dir \
+        jupyterlab \
+        jupysql \
+        ipywidgets \
+        pandas \
+        polars \
+        pyarrow \
+        numpy \
+        matplotlib \
+        mysqlclient \
+        psycopg2-binary" \
+    && apt-get purge -y --auto-remove python3-dev build-essential pkg-config \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.local
 
 # 切换到非root用户
 USER ${USERNAME}
 
-# 安装Python依赖
-RUN pip install --user --no-cache-dir \
-    jupyterlab \
-    jupysql \
-    ipywidgets \
-    pandas \
-    polars \
-    pyarrow \
-    numpy \
-    matplotlib \
-    mysqlclient \
-    psycopg2-binary
 
 # 设置工作目录和用户
 WORKDIR ${JUPYTER_BASE_DIR}
