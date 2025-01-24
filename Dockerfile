@@ -10,21 +10,23 @@ ARG USE_CN_MIRRORS=false
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 ARG USERNAME=notroot
+ARG ROOT_PASSWORD=isroot
 
 # 环境变量
 ENV USER_ID=${USER_ID} \
     GROUP_ID=${GROUP_ID} \
     USERNAME=${USERNAME} \
+    ROOT_PASSWORD=${ROOT_PASSWORD} \
     JUPYTER_TOKEN=123456 \
     JUPYTER_BASE_DIR=/opt/workspace \
     PATH="/home/${USERNAME}/.local/bin:$PATH"
 
 # 配置中国镜像源（如果需要）
-COPY config/mirrors/cn/debian_bullseye_config /tmp/sources.list
-COPY config/mirrors/cn/pypi_config /tmp/pip.conf
+COPY config/mirrors/cn/debian_bullseye_config /opt/sources.list
+COPY config/mirrors/cn/pypi_config /opt/pip.conf
 RUN if [ "$USE_CN_MIRRORS" = "true" ]; then \
-        cp /tmp/sources.list /etc/apt/sources.list && \
-        cp /tmp/pip.conf /etc/pip.conf; \
+        cp /opt/sources.list /etc/apt/sources.list && \
+        cp /opt/pip.conf /etc/pip.conf; \
     fi
 
 # 安装系统依赖并创建用户
@@ -35,6 +37,7 @@ RUN apt-get update && \
         build-essential \
         pkg-config \
         curl \
+    && echo "root:${ROOT_PASSWORD}" | chpasswd \
     && groupadd -g ${GROUP_ID} ${USERNAME} \
     && useradd -u ${USER_ID} -g ${GROUP_ID} -m -s /bin/bash ${USERNAME} \
     && install -d -m 755 -o ${USERNAME} -g ${USERNAME} \
