@@ -19,16 +19,20 @@
 docker pull ghcr.io/straydragon/jupyter-x-db:latest
 cd <a directory which you like>
 mkdir -p notebooks
-docker run --host -v $(pwd)/notebooks:/opt/workspace/notebooks ghcr.io/straydragon/jupyter-x-db
+docker run -it --rm -p 8888:8888 -v $(pwd)/notebooks:/opt/workspace/notebooks ghcr.io/straydragon/jupyter-x-db
+
 ```
-或者复制并参考 [user.docker-compose.yml](./docker-compose.yml) 使用 docker compose 运行
+
+(推荐) 复制并参考 [user.docker-compose.yml](./user.docker-compose.yml) 使用 docker compose 运行
+
+访问 http://localhost:8888 即可使用（Token 默认为 123456）
 
 
 ### 本地开发运行
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/straydragon/docker-jupyter-jupysql.git
+git clone https://github.com/straydragon/docker-jupyter-x-db.git
 cd docker-jupyter-jupysql
 ```
 
@@ -36,7 +40,7 @@ cd docker-jupyter-jupysql
 ```bash
 docker build -t jupyter-x-db --build-arg USE_CN_MIRRORS=true  .
 mkdir -p notebooks
-docker run -p 8888:8888 -v $(pwd)/notebooks:/opt/workspace/notebooks jupyter-x-db
+docker run -it --rm -p 8888:8888 -v $(pwd)/notebooks:/opt/workspace/notebooks jupyter-x-db
 ```
 
 访问 http://localhost:8888 即可使用（Token 默认为 123456）
